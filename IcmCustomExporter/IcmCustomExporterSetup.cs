@@ -69,12 +69,14 @@ namespace IcmCustomExporter
                     m_DocConverters.Add(exporter as IDocumentOutputConverter);
             }
 
-            option_Single.Checked = workingMode == ReleaseMode.SinglePage;
-            option_Multi.Checked = workingMode == ReleaseMode.MultiPage;
+            //option_Single.Checked = workingMode == ReleaseMode.SinglePage;
+            //option_Multi.Checked = workingMode == ReleaseMode.MultiPage;
 
-            option_Single.Enabled = false;
-            option_Multi.Select();
-            combo_FileType.SelectedIndex = 0;
+            option_Single.Enabled = true;
+            option_Single.Checked = true;
+
+            //option_Multi.Select();
+            combo_FileType.SelectedIndex = 1;
             combo_FileType.Enabled = false;
 
             if (deleteFirstPage)

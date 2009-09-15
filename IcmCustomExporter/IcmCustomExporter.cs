@@ -103,7 +103,9 @@ namespace IcmCustomExporter
         /// <summary>
         /// Point to the destination folder for the pages to be released in the current document
         /// </summary>
-        private string m_DocFolder; 
+        private string m_DocFolder;
+
+        private string m_FileName;
         #endregion
 
         #region Handlers to be called during an actual release process
@@ -157,6 +159,8 @@ namespace IcmCustomExporter
             bool batchFolderCreated = !Directory.Exists(m_BatchFolder);
             if (batchFolderCreated)
                 Directory.CreateDirectory(m_BatchFolder);
+
+            m_FileName = string.Format("{0} -", batch.Name);
 
             /// Again, the application will keep any object returned from this function and pass it back to the script 
             /// in the EndBatch call. This is usually intended to facilitate cleanup.
@@ -216,6 +220,8 @@ namespace IcmCustomExporter
             if (docFolderCreated)
                 Directory.CreateDirectory(m_DocFolder);
 
+            m_FileName += doc.GetIndexDataValue(0);
+
             /// Finally, the application will keep any object returned from this function and pass it back to the script 
             /// in the EndDocument call. This is usually intended to facilitate cleanup.
             return docFolderCreated;
@@ -228,9 +234,22 @@ namespace IcmCustomExporter
         /// </summary>
         public void Release(IPage page)
         {
-            string outputFileName = Path.Combine(m_DocFolder, page.Number.ToString());
-            m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
-            
+            if (m_DeleteFirstPage)
+            {
+                if(page.Number.Equals(1))
+                    return;
+
+                int pageNumber = page.Number - 1;
+                string outputFileName = Path.Combine(m_DocFolder, m_FileName + "-" + pageNumber);
+                m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
+
+            }
+            else
+            {
+                //string outputFileName = Path.Combine(m_DocFolder, page.Number.ToString());
+                string outputFileName = Path.Combine(m_DocFolder, m_FileName + "-" + page.Number.ToString());
+                m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
+            }
         }
 
         /// <summary>
@@ -325,8 +344,7 @@ namespace IcmCustomExporter
 
             m_Destination = setupDialog.Destination;
             m_FileTypeId = setupDialog.FileTypeId;
-            //m_WorkingMode = setupDialog.WorkingMode;
-            m_WorkingMode = ReleaseMode.MultiPage;
+            m_WorkingMode = setupDialog.WorkingMode;
             m_DeleteFirstPage = setupDialog.DeleteFirstPage;
         } 
         #endregion

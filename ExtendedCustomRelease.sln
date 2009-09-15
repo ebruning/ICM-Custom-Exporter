@@ -18,6 +18,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_ConfigurationName = Debug
+		BuildVersion_AssemblyInfoFilename = IcmCustomExporter\Properties\AssemblyInfo.cs
+		BuildVersion_BuildVersioningStyle = None.None.Increment.None
 		VisualSVNWorkingCopyRoot = .
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution

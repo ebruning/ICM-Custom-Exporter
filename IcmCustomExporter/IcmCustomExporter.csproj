@@ -120,4 +120,9 @@
     <PostBuildEvent>copy $(TargetPath) "c:\Program Files\Kofax\Kofax Express\bin\ReleaseScripts"
 copy $(ProjectDir)$(OutDir)*.pdb  "c:\Program Files\Kofax\Kofax Express\bin\ReleaseScripts"</PostBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.None" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -45,7 +45,7 @@ namespace IcmCustomExporter
             // label_Destination
             // 
             this.label_Destination.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                                  | System.Windows.Forms.AnchorStyles.Right)));
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.label_Destination.AutoSize = true;
             this.label_Destination.Location = new System.Drawing.Point(12, 9);
             this.label_Destination.Name = "label_Destination";
@@ -56,7 +56,7 @@ namespace IcmCustomExporter
             // label_FileType
             // 
             this.label_FileType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                               | System.Windows.Forms.AnchorStyles.Right)));
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.label_FileType.AutoSize = true;
             this.label_FileType.Location = new System.Drawing.Point(12, 48);
             this.label_FileType.Name = "label_FileType";
@@ -67,7 +67,7 @@ namespace IcmCustomExporter
             // input_Destination
             // 
             this.input_Destination.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                                  | System.Windows.Forms.AnchorStyles.Right)));
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.input_Destination.Location = new System.Drawing.Point(15, 25);
             this.input_Destination.Name = "input_Destination";
             this.input_Destination.ReadOnly = true;
@@ -88,7 +88,7 @@ namespace IcmCustomExporter
             // combo_FileType
             // 
             this.combo_FileType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                                                                               | System.Windows.Forms.AnchorStyles.Right)));
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.combo_FileType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_FileType.FormattingEnabled = true;
             this.combo_FileType.Location = new System.Drawing.Point(15, 64);
@@ -153,6 +153,7 @@ namespace IcmCustomExporter
             this.option_Multi.TabStop = true;
             this.option_Multi.Text = "Multi page";
             this.option_Multi.UseVisualStyleBackColor = true;
+            this.option_Multi.Visible = false;
             this.option_Multi.CheckedChanged += new System.EventHandler(this.option_SingleMulti_CheckedChanged);
             // 
             // delete_first_page_checkbox
@@ -166,7 +167,7 @@ namespace IcmCustomExporter
             this.delete_first_page_checkbox.UseVisualStyleBackColor = true;
             this.delete_first_page_checkbox.CheckedChanged += new System.EventHandler(this.delete_first_page_checkbox_CheckedChanged);
             // 
-            // CustomReleaseSetup
+            // IcmCustomExporterSetup
             // 
             this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -185,9 +186,9 @@ namespace IcmCustomExporter
             this.Controls.Add(this.label_FileType);
             this.Controls.Add(this.label_Destination);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "CustomReleaseSetup";
+            this.Name = "IcmCustomExporterSetup";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Simple Release Setup";
+            this.Text = "ICM Custom Exporter Setup";
             this.ResumeLayout(false);
             this.PerformLayout();
 
