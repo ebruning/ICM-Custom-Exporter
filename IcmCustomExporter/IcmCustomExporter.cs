@@ -105,7 +105,8 @@ namespace IcmCustomExporter
         /// </summary>
         private string m_DocFolder;
 
-        private string m_FileName;
+        private string m_ProjectNumber;
+        private string m_SequenceNumber;
         #endregion
 
         #region Handlers to be called during an actual release process
@@ -160,13 +161,11 @@ namespace IcmCustomExporter
             if (batchFolderCreated)
                 Directory.CreateDirectory(m_BatchFolder);
 
-            m_FileName = string.Format("{0} -", batch.Name);
+            m_ProjectNumber = string.Format("{0}-", batch.Name);
 
             /// Again, the application will keep any object returned from this function and pass it back to the script 
             /// in the EndBatch call. This is usually intended to facilitate cleanup.
-            return batchFolderCreated;
-
-            
+            return batchFolderCreated;   
         }
 
         /// <summary>
@@ -214,17 +213,19 @@ namespace IcmCustomExporter
         /// </summary>
         public object StartDocument(IDocument doc)
         {
-            m_DocFolder = Path.Combine(m_BatchFolder, doc.Number.ToString());
+            //m_DocFolder = Path.Combine(m_BatchFolder, doc.Number.ToString());
 
-            bool docFolderCreated = !Directory.Exists(m_DocFolder);
-            if (docFolderCreated)
-                Directory.CreateDirectory(m_DocFolder);
+            //bool docFolderCreated = !Directory.Exists(m_DocFolder);
+            //if (docFolderCreated)
+            //    Directory.CreateDirectory(m_DocFolder);
 
-            m_FileName += doc.GetIndexDataValue(0);
+            m_SequenceNumber = doc.GetIndexDataValue(0);
 
             /// Finally, the application will keep any object returned from this function and pass it back to the script 
             /// in the EndDocument call. This is usually intended to facilitate cleanup.
-            return docFolderCreated;
+            //return docFolderCreated;
+
+            return null;
         }
 
         /// <summary>
@@ -240,14 +241,15 @@ namespace IcmCustomExporter
                     return;
 
                 int pageNumber = page.Number - 1;
-                string outputFileName = Path.Combine(m_DocFolder, m_FileName + "-" + pageNumber);
+
+                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + pageNumber.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
 
             }
             else
             {
                 //string outputFileName = Path.Combine(m_DocFolder, page.Number.ToString());
-                string outputFileName = Path.Combine(m_DocFolder, m_FileName + "-" + page.Number.ToString());
+                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + "-" + page.Number.ToString());
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
             }
         }

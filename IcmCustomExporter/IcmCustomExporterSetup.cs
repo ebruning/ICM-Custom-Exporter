@@ -76,7 +76,7 @@ namespace IcmCustomExporter
             option_Single.Checked = true;
 
             //option_Multi.Select();
-            combo_FileType.SelectedIndex = 1;
+            combo_FileType.SelectedIndex = 2;
             combo_FileType.Enabled = false;
 
             if (deleteFirstPage)
