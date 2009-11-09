@@ -54,6 +54,8 @@ namespace IcmCustomExporter
         {
             InitializeComponent();
 
+            this.Text = "ICM Custom Exporter Setup - " +
+                        System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             /// Reflecting current settings onto UI controls
             input_Destination.Text = destination;
             m_CurrentFileTypeId = fileTypeId;

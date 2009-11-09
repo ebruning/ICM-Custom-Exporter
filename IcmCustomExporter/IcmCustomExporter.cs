@@ -155,7 +155,7 @@ namespace IcmCustomExporter
         /// </summary>
         public object StartBatch(IBatch batch)
         {
-            m_BatchFolder = m_Destination;
+            m_BatchFolder = Path.Combine(m_Destination, batch.Name);
 
             bool batchFolderCreated = !Directory.Exists(m_BatchFolder);
             if (batchFolderCreated)
@@ -243,13 +243,15 @@ namespace IcmCustomExporter
                 int pageNumber = page.Number - 1;
 
                 string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + pageNumber.ToString("D4"));
+                //string outputFileName = Path.Combine(m_BatchFolder, m_SequenceNumber + pageNumber.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
 
             }
             else
             {
                 //string outputFileName = Path.Combine(m_DocFolder, page.Number.ToString());
-                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + "-" + page.Number.ToString());
+                //string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + "-" + page.Number.ToString());
+                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + page.Number.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
             }
         }
