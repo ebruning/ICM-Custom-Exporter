@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Kofax.Eclipse.Base;
-using Kofax.Eclipse.CustomRelease;
+//using Kofax.Eclipse.CustomRelease;
 
 //using NLog;
 
@@ -196,11 +196,6 @@ namespace IcmCustomExporter
             }
             else
             {
-                outputFileName = m_DeleteFirstPage
-                                     ? outputFileName + "." + m_TiffExporter.DefaultExtension
-                                     : outputFileName + "." + m_DocConverter.DefaultExtension;
-
-                //logger.Error("File exists -> " + outputFileName);
                 throw new Exception("File already exists ->" + outputFileName); 
             }
 
@@ -213,17 +208,10 @@ namespace IcmCustomExporter
         /// </summary>
         public object StartDocument(IDocument doc)
         {
-            //m_DocFolder = Path.Combine(m_BatchFolder, doc.Number.ToString());
-
-            //bool docFolderCreated = !Directory.Exists(m_DocFolder);
-            //if (docFolderCreated)
-            //    Directory.CreateDirectory(m_DocFolder);
-
             m_SequenceNumber = doc.GetIndexDataValue(0);
 
             /// Finally, the application will keep any object returned from this function and pass it back to the script 
             /// in the EndDocument call. This is usually intended to facilitate cleanup.
-            //return docFolderCreated;
 
             return null;
         }
@@ -243,14 +231,10 @@ namespace IcmCustomExporter
                 int pageNumber = page.Number - 1;
 
                 string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + pageNumber.ToString("D4"));
-                //string outputFileName = Path.Combine(m_BatchFolder, m_SequenceNumber + pageNumber.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
-
             }
             else
             {
-                //string outputFileName = Path.Combine(m_DocFolder, page.Number.ToString());
-                //string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + "-" + page.Number.ToString());
                 string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + page.Number.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
             }
@@ -340,10 +324,10 @@ namespace IcmCustomExporter
         public void Setup(IList<IExporter> exporters, IIndexField[] indexFields, IDictionary<string, string> releaseData)
         {
             IcmCustomExporterSetup setupDialog = new IcmCustomExporterSetup(exporters, 
-                                                                    m_Destination, 
-                                                                    m_FileTypeId, 
-                                                                    m_WorkingMode, 
-                                                                    m_DeleteFirstPage);
+                                                                            m_Destination, 
+                                                                            m_FileTypeId, 
+                                                                            m_WorkingMode, 
+                                                                            m_DeleteFirstPage);
             if (setupDialog.ShowDialog() != DialogResult.OK) return;
 
             m_Destination = setupDialog.Destination;

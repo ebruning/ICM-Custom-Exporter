@@ -6,7 +6,7 @@ using Kofax.Eclipse.Toolkit;
 using Kofax.Eclipse.Base;
 //using NLog;
 
-namespace Kofax.Eclipse.CustomRelease
+namespace IcmCustomExporter
 {
     public class TiffExporter : IDocumentOutputConverter
     {
