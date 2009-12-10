@@ -60,10 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files\Kofax\Kofax Express\bin\Kofax.Eclipse.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Kofax.Eclipse.Tools, Version=1.10.359.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files\Kofax\Kofax Express\bin\Kofax.Eclipse.Tools.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -83,7 +79,6 @@
     <Compile Include="IcmCustomExporterSetup.Designer.cs">
       <DependentUpon>IcmCustomExporterSetup.cs</DependentUpon>
     </Compile>
-    <Compile Include="TiffExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="IcmCustomExporterSetup.resx">

@@ -88,8 +88,6 @@ namespace IcmCustomExporter
         /// </summary>
         private IPageOutputConverter m_PageConverter;
 
-        private TiffExporter m_TiffExporter;
-
         /// <summary>
         /// Reference to the actively employed converter to pass the documents through
         /// </summary>
@@ -122,7 +120,6 @@ namespace IcmCustomExporter
                 throw new Exception("Please specify a release destination");
 
             m_DocConverter = null;
-            m_TiffExporter = null;
             m_PageConverter = null;
 
             foreach (IExporter exporter in exporters)
@@ -132,8 +129,7 @@ namespace IcmCustomExporter
                         m_PageConverter = exporter as IPageOutputConverter;
                     else
                     {
-                        m_DocConverter = exporter as IDocumentOutputConverter;
-                        m_TiffExporter = new TiffExporter();
+                        m_DocConverter = exporter as IDocumentOutputConverter;              
                     }
                 }
 
@@ -175,30 +171,6 @@ namespace IcmCustomExporter
         /// </summary>
         public void Release(IDocument doc)
         {
-            //logger.Info("Enter");
-
-            string outputFileName = Path.Combine(m_BatchFolder, doc.GetIndexDataValue(0));
-
-            //logger.Debug("Creating -> " + outputFileName + "." + m_DocConverter.DefaultExtension);
-
-            if (!File.Exists(outputFileName + "." + m_TiffExporter.DefaultExtension))
-            {
-                if (!m_DeleteFirstPage)
-                {
-                    //Dont delete first page
-                    m_DocConverter.Convert(doc, Path.ChangeExtension(outputFileName, m_DocConverter.DefaultExtension));
-                }
-                else
-                {
-                    //Delete first page
-                    m_TiffExporter.Convert(doc, Path.ChangeExtension(outputFileName, m_TiffExporter.DefaultExtension));
-                }
-            }
-            else
-            {
-                throw new Exception("File already exists ->" + outputFileName); 
-            }
-
         }
 
         /// <summary>
