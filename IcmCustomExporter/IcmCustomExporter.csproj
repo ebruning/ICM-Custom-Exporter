@@ -56,9 +56,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Kofax.Eclipse.Base, Version=1.10.359.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Kofax.Eclipse.Base, Version=2.0.44.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files\Kofax\Kofax Express\bin\Kofax.Eclipse.Base.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Kofax\Kofax Express\bin\Kofax.Eclipse.Base.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -112,8 +112,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) "c:\Program Files\Kofax\Kofax Express\bin\ReleaseScripts"
-copy $(ProjectDir)$(OutDir)*.pdb  "c:\Program Files\Kofax\Kofax Express\bin\ReleaseScripts"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files\Kofax\Kofax Express\bin\ExportConnectors"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

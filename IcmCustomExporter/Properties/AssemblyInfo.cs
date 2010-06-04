@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kofax, Inc.")]
 [assembly: AssemblyProduct("Kofax Express")]
-[assembly: AssemblyCopyright("Copyright © Kofax Image Products 2007")]
+[assembly: AssemblyCopyright("Copyright © Kofax, Inc. 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.17.0")]
-[assembly: AssemblyFileVersion("1.0.17.0")]
+[assembly: AssemblyVersion("1.0.48.0")]
+[assembly: AssemblyFileVersion("1.0.48.0")]

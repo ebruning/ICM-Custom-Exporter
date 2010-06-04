@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Kofax.Eclipse.Base;
-//using Kofax.Eclipse.CustomRelease;
-
-//using NLog;
 
 namespace IcmCustomExporter
 {
@@ -56,7 +54,7 @@ namespace IcmCustomExporter
         public bool IsSupported(ReleaseMode mode)
         {
             return true;
-        } 
+        }
         #endregion
 
         #region Script settings - Will be remembered across sessions
@@ -66,8 +64,7 @@ namespace IcmCustomExporter
         private ReleaseMode m_WorkingMode = ReleaseMode.SinglePage;
 
         /// <summary>
-        /// The destination to place the released pages. Under this destination, 
-        /// a folder structure of "[BatchName]\[DocNumber]" will be created.
+        /// The destination to place the released pages. 
         /// </summary>
         private string m_Destination = string.Empty;
 
@@ -103,8 +100,14 @@ namespace IcmCustomExporter
         /// </summary>
         private string m_DocFolder;
 
-        private string m_ProjectNumber;
+        //ICM Variables
+        private int m_DocumentNumber;
+        private string m_ProjectNumber;  //Populated from the first index field, barcode value
         private string m_SequenceNumber;
+        private string m_BarcodeFileName;
+        private int m_PageNumber;
+        private int m_PreviousSheetNumber;
+        private bool m_IsDuplex;
         #endregion
 
         #region Handlers to be called during an actual release process
@@ -129,7 +132,7 @@ namespace IcmCustomExporter
                         m_PageConverter = exporter as IPageOutputConverter;
                     else
                     {
-                        m_DocConverter = exporter as IDocumentOutputConverter;              
+                        m_DocConverter = exporter as IDocumentOutputConverter;
                     }
                 }
 
@@ -138,7 +141,7 @@ namespace IcmCustomExporter
             if (m_PageConverter == null && m_DocConverter == null)
                 throw new Exception("Please select an output file type");
 
-            
+
             /// The application will keep any object returned from this function and pass it back to the script 
             /// in the EndRelease call. This is usually intended to facilitate cleanup.
             return null;
@@ -158,19 +161,16 @@ namespace IcmCustomExporter
                 Directory.CreateDirectory(m_BatchFolder);
 
             m_ProjectNumber = string.Format("{0}-", batch.Name);
+            m_BarcodeFileName = Path.Combine(m_BatchFolder, "barcode.txt");
 
             /// Again, the application will keep any object returned from this function and pass it back to the script 
-            /// in the EndBatch call. This is usually intended to facilitate cleanup.
-            return batchFolderCreated;   
+            /// in the EndBatch call. This is usually intended to facilitate cleanup.)
+            return batchFolderCreated;
         }
 
-        /// <summary>
-        /// In multipage release mode, this method will be called for every documents in the batch.
-        /// This script will simply pass documents to the selected document output converter to produce
-        /// the expected output files in the released batch folder.
-        /// </summary>
         public void Release(IDocument doc)
         {
+            //Nothing to do
         }
 
         /// <summary>
@@ -181,9 +181,8 @@ namespace IcmCustomExporter
         public object StartDocument(IDocument doc)
         {
             m_SequenceNumber = doc.GetIndexDataValue(0);
-
-            /// Finally, the application will keep any object returned from this function and pass it back to the script 
-            /// in the EndDocument call. This is usually intended to facilitate cleanup.
+            m_DocumentNumber = doc.Number;
+            m_PageNumber = 0;
 
             return null;
         }
@@ -202,14 +201,50 @@ namespace IcmCustomExporter
 
                 int pageNumber = page.Number - 1;
 
-                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + pageNumber.ToString("D4"));
+                //string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_DocumentNumber.ToString("D4") + "-" + pageNumber.ToString("D4"));
+                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_DocumentNumber.ToString("D4") + "-" + pageNumber.ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
+                UpdateIndexFile(Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
             }
             else
             {
-                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_SequenceNumber + "-" + page.Number.ToString("D4"));
+                //string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_DocumentNumber.ToString("D4") + "-" + page.Number.ToString("D4"));
+                string outputFileName = Path.Combine(m_BatchFolder, m_ProjectNumber + m_DocumentNumber.ToString("D4") + "-" + GetPageNumber(page).ToString("D4"));
                 m_PageConverter.Convert(page, Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
+                UpdateIndexFile(Path.ChangeExtension(outputFileName, m_PageConverter.DefaultExtension));
             }
+        }
+
+        private int GetPageNumber(IPage page)
+        {
+            if (page.Number == 1)
+            {
+                m_PageNumber = m_PageNumber + 1;
+                m_PreviousSheetNumber = page.SheetNumber;
+                return m_PageNumber;
+            }
+
+            if (m_PreviousSheetNumber == page.SheetNumber)
+            {
+                m_PageNumber = m_PageNumber + 1;
+                m_IsDuplex = true;
+            }
+            
+            if ((m_PreviousSheetNumber != page.SheetNumber) && !m_IsDuplex)
+            {
+                m_PageNumber = m_PageNumber + 2;
+                m_IsDuplex = false;
+                m_PreviousSheetNumber = page.SheetNumber;
+            }
+
+            if ((m_PreviousSheetNumber != page.SheetNumber) && m_IsDuplex)
+            {
+                m_PageNumber = m_PageNumber + 1;
+                m_IsDuplex = false;
+                m_PreviousSheetNumber = page.SheetNumber;
+            }            
+
+            return m_PageNumber;
         }
 
         /// <summary>
@@ -244,7 +279,7 @@ namespace IcmCustomExporter
         {
             /// Since we don't do anything special in this simple script, 
             /// there's nothing to be cleaned up here. The handle should always be null.
-        } 
+        }
         #endregion
 
         #region Handlers to be called during configuration requests by the user and before/after a release session
@@ -295,10 +330,10 @@ namespace IcmCustomExporter
         /// </summary>
         public void Setup(IList<IExporter> exporters, IIndexField[] indexFields, IDictionary<string, string> releaseData)
         {
-            IcmCustomExporterSetup setupDialog = new IcmCustomExporterSetup(exporters, 
-                                                                            m_Destination, 
-                                                                            m_FileTypeId, 
-                                                                            m_WorkingMode, 
+            IcmCustomExporterSetup setupDialog = new IcmCustomExporterSetup(exporters,
+                                                                            m_Destination,
+                                                                            m_FileTypeId,
+                                                                            m_WorkingMode,
                                                                             m_DeleteFirstPage);
             if (setupDialog.ShowDialog() != DialogResult.OK) return;
 
@@ -306,7 +341,19 @@ namespace IcmCustomExporter
             m_FileTypeId = setupDialog.FileTypeId;
             m_WorkingMode = setupDialog.WorkingMode;
             m_DeleteFirstPage = setupDialog.DeleteFirstPage;
-        } 
+        }
         #endregion
+
+        private void UpdateIndexFile(string imageName)
+        {
+            using (FileStream fs = new FileStream(m_BarcodeFileName, FileMode.Append, FileAccess.Write, FileShare.None))
+            using (StreamWriter writer = new StreamWriter(fs, Encoding.ASCII))
+            {
+                writer.WriteLine(string.Format("{0},{1}", Path.GetFileName(imageName), m_SequenceNumber));
+
+                writer.Flush();
+                writer.Close();
+            }
+        }
     }
 }
